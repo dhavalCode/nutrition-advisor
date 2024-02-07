@@ -11,7 +11,7 @@
   "dependencies": {
     "markdown-to-jsx": "^7.4.1",
     "next": "14.1.0",
-    "nutrition-ai": "^1.0.0",
+    "nutrition-ai": "^2.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
