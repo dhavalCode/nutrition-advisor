@@ -10,6 +10,7 @@ export default function Home() {
   const [base64String, setBase64String] = useState<string | null>(null);
   const [generatedText, setGeneratedText] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleGenerateAnswer = async (
     imageBase64: string,
@@ -24,7 +25,7 @@ export default function Home() {
       });
       setGeneratedText(answer);
     } catch (error) {
-      console.log("error =>", error);
+      setIsError(true);
     } finally {
       setIsGenerating(false);
     }
@@ -92,7 +93,7 @@ export default function Home() {
               height={320}
               alt="preview"
             />
-            {!isGenerating && generatedText && (
+            {!isGenerating && (generatedText || isError) && (
               <button
                 type="button"
                 className="text-white mt-2 bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
@@ -100,6 +101,7 @@ export default function Home() {
                   setBase64String(null);
                   setGeneratedText(null);
                   setIsGenerating(false);
+                  setIsError(false);
                 }}
               >
                 Reset
@@ -149,9 +151,17 @@ export default function Home() {
         </div>
       )}
 
+      {!isGenerating && !generatedText && isError && (
+        <p className="max-w-2xl mx-auto text-gray-700 mt-10">
+          We apologize, but it seems an error has occurred. Kindly attempt to
+          re-upload the image, ensuring that its size is below 1 MB. Thank you
+          for your understanding.
+        </p>
+      )}
+
       {generatedText && (
         <p className="max-w-2xl mx-auto text-gray-700 mt-10">
-          <Markdown>{generatedText}</Markdown>
+          <Markdown className="prose">{generatedText}</Markdown>
         </p>
       )}
     </main>
