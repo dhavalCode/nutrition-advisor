@@ -5,6 +5,7 @@ import Markdown from "react-markdown";
 import { generateAnswer } from "nutrition-ai";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import Compressor from "compressorjs";
 
 export default function Home() {
   const [base64String, setBase64String] = useState<string | null>(null);
@@ -42,7 +43,15 @@ export default function Home() {
       handleGenerateAnswer(base64.split(",")[1], file.type);
     };
 
-    reader.readAsDataURL(file);
+    new Compressor(file, {
+      quality: 0.7,
+      success: (compressedFile) => {
+        reader.readAsDataURL(compressedFile);
+      },
+      error: (_error) => {
+        setIsError(true);
+      },
+    });
   }, []);
 
   const { getInputProps } = useDropzone({
@@ -154,7 +163,7 @@ export default function Home() {
       {!isGenerating && !generatedText && isError && (
         <p className="max-w-2xl mx-auto text-gray-700 mt-10">
           We apologize, but it seems an error has occurred. Kindly attempt to
-          re-upload the image, ensuring that its size is below 1 MB. Thank you
+          re-upload the image, ensuring that its size is below 2 MB. Thank you
           for your understanding.
         </p>
       )}
